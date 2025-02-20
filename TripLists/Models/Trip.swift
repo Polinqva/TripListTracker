@@ -12,4 +12,5 @@ struct Trip: Identifiable {
     let title: String
     let color: Color
     let iconName: String
+    let itemsToBring: [String]
 }

@@ -12,6 +12,9 @@ struct ContentView: View {
     @State private var searchText = ""
     @State private var isShowingAddTripSheet = false
     
+    @State private var selectedTrip: Trip? = nil
+    @State private var isShowingTripDetailSheet = false
+    
     let columns = [
         GridItem(.flexible(), spacing: 15),
         GridItem(.flexible(), spacing: 15)
@@ -41,7 +44,14 @@ struct ContentView: View {
             ScrollView(.vertical, showsIndicators: true) {
                 LazyVGrid(columns: columns, spacing: 12) {
                     ForEach(viewModel.trips) { trip in
-                        TripCard(title: trip.title, color: trip.color, iconName: trip.iconName)
+                        TripCard(
+                            title: trip.title,
+                            color: trip.color,
+                            iconName: trip.iconName)
+                        .onTapGesture {
+                            selectedTrip = trip
+                            isShowingTripDetailSheet = true
+                        }
                     }
                 }
                 .padding(.horizontal)
@@ -49,8 +59,13 @@ struct ContentView: View {
             
             Spacer()
         }
+        // 1) Sheet for adding a new trip
         .sheet(isPresented: $isShowingAddTripSheet) {
             AddTripView(viewModel: viewModel)
+        }
+        // 2) Sheet for viewing trip details
+        .sheet(item: $selectedTrip) { trip in
+            TripListDetailView(trip: trip)
         }
     }
 }
